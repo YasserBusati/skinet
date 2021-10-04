@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Core.Interfaces;
 
 namespace API.Controllers
 {
@@ -12,20 +13,22 @@ namespace API.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly StoreContext _context;
-        public ProductController(StoreContext context)
+        private readonly IProductRepository _repo;
+        
+        public ProductController(IProductRepository repo)
         {
-            _context = context;
+            _repo = repo;
+            
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProduct(){
-            var products =await  _context.Products.ToListAsync();
+            var products =await  _repo.GetProductAsync();
             return Ok(products);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id){
-            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            return await _repo.GetProductByIdAsync(id);
         }
     }
 }
