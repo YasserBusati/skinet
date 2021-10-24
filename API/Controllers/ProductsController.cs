@@ -10,12 +10,12 @@ using Core.Interfaces;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ProductController : ControllerBase
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _repo;
         
-        public ProductController(IProductRepository repo)
+        public ProductsController(IProductRepository repo)
         {
             _repo = repo;
             
@@ -23,12 +23,26 @@ namespace API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProduct(){
-            var products =await  _repo.GetProductAsync();
+            var products =await  _repo.GetProductsAsync();
             return Ok(products);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id){
             return await _repo.GetProductByIdAsync(id);
+        }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProjectBrands()
+        {
+            var brands = await _repo.GetProductBrandsAsync();
+            return Ok(brands);
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProjectTypes()
+        {
+            var types = await _repo.GetProductTypesAsync();
+            return Ok(types);
         }
     }
 }
